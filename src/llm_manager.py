@@ -16,7 +16,8 @@ def chat_with_model(url, api_key, model, messages):
         }
         data = {
           "model": model,
-          "messages": messages
+          "messages": messages,
+          "chat_template_kwargs": {"enable_thinking": False}
         }
         response = requests.post(url + "chat/completions", headers=headers, json=data)
         response.raise_for_status()
