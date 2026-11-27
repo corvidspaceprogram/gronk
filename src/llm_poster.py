@@ -68,14 +68,10 @@ class LlmPoster():
             self.handle_error()
             raise
 
-    def prepare_context(self):
-        if os.path.exists('posts.json'):
-            # Refresh post history file
-            mastodon_client.update_instance_posts(\
-                self.mastodon_api, self.context_limit, \
-                text_cleaner.clean_content, self.filter_keywords, self.own_posts_max)
-        else: 
-            # Create posts.json file
+    def prepare_context(self, refresh=False):
+
+        if refresh:
+            # Create fresh posts.json file
             mastodon_client.store_instance_posts(\
                 self.mastodon_api, self.context_limit, \
                 text_cleaner.clean_content, self.filter_keywords, self.own_posts_max)
@@ -122,7 +118,7 @@ class LlmPoster():
             return True
             
         # Prepare context (inline in system prompt)
-        self.prepare_context()
+        self.prepare_context(refresh=False)
 
         terminated = sleep_until_shutdown(30, self.shutdown_event)
 
