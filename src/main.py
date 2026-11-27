@@ -72,9 +72,10 @@ class RandomLlmPoster(LlmPoster):
                 refresh_schedule.write_refresh_to_file(next_refresh, "next_post_time.txt")
 
                 # Prepare context (inline in system prompt)
+                # Also use this opportunity to create fresh posts file
                 if SHUTDOWN_EVENT.is_set():
                     break
-                self.prepare_context()
+                self.prepare_context(refresh=True)
 
                 # This is necessary to allow the text embedding model enough time to load before the embeddings are needed. 
                 terminated = refresh_schedule.sleep_until_shutdown(\
